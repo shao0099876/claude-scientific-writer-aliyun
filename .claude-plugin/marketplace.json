@@ -1,17 +1,16 @@
 {
-  "name": "claude-scientific-writer",
+  "name": "claude-scientific-writer-aliyun",
   "metadata": {
-    "description": "Skills and setup for scientific writing (papers, grants, posters, clinical reports) using the scientific-writer toolkit.",
+    "description": "Skills and setup for scientific writing (papers, grants, posters, clinical reports) using the scientific-writer toolkit. Alibaba Cloud (阿里云) DashScope edition — image generation and vision models migrated to DashScope SDK.",
     "version": "0.1.0",
-    "homepage": "https://github.com/K-Dense-AI/claude-scientific-writer"
+    "homepage": "https://github.com/shao0099876/claude-scientific-writer-aliyun"
   },
   "owner": {
-    "name": "K-Dense Inc.",
-    "email": "contact@k-dense.ai"
+    "name": "shao0099876"
   },
   "plugins": [
     {
-      "name": "claude-scientific-writer",
+      "name": "claude-scientific-writer-aliyun",
       "description": "Collection of scientific writer skills",
       "source": "./",
       "strict": false,
@@ -20,12 +19,16 @@
         "./skills/clinical-decision-support",
         "./skills/clinical-reports",
         "./skills/document-skills",
+        "./skills/generate-image",
         "./skills/hypothesis-generation",
+        "./skills/infographics",
         "./skills/latex-posters",
         "./skills/literature-review",
+        "./skills/market-research-reports",
         "./skills/markitdown",
         "./skills/paper-2-web",
         "./skills/peer-review",
+        "./skills/pptx-posters",
         "./skills/research-grants",
         "./skills/research-lookup",
         "./skills/scholar-evaluation",

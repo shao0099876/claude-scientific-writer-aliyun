@@ -68,7 +68,7 @@ Examples:
   python generate_schematic.py "Circuit diagram" -o circuit.png -v
 
 Environment Variables:
-  OPENROUTER_API_KEY    Required for AI generation
+  DASHSCOPE_API_KEY     Required for AI generation (阿里云 DashScope)
         """
     )
     
@@ -83,20 +83,20 @@ Environment Variables:
     parser.add_argument("--iterations", type=int, default=2,
                        help="Maximum refinement iterations (default: 2, max: 2)")
     parser.add_argument("--api-key", 
-                       help="OpenRouter API key (or use OPENROUTER_API_KEY env var)")
+                       help="DashScope API key (or use DASHSCOPE_API_KEY env var)")
     parser.add_argument("-v", "--verbose", action="store_true",
                        help="Verbose output")
     
     args = parser.parse_args()
     
     # Check for API key
-    api_key = args.api_key or os.getenv("OPENROUTER_API_KEY")
+    api_key = args.api_key or os.getenv("DASHSCOPE_API_KEY")
     if not api_key:
-        print("Error: OPENROUTER_API_KEY environment variable not set")
-        print("\nFor AI generation, you need an OpenRouter API key.")
-        print("Get one at: https://openrouter.ai/keys")
+        print("Error: DASHSCOPE_API_KEY environment variable not set")
+        print("\nFor AI generation, you need a DashScope API key.")
+        print("Get one at: https://dashscope.console.aliyun.com/")
         print("\nSet it with:")
-        print("  export OPENROUTER_API_KEY='your_api_key'")
+        print("  export DASHSCOPE_API_KEY='your_api_key'")
         print("\nOr use --api-key flag")
         sys.exit(1)
     

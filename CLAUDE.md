@@ -85,7 +85,18 @@ Each skill has a `SKILL.md` with YAML frontmatter (name, description, triggers) 
 | `generate_slide_image.py` | `scientific-slides/scripts/` | CLI wrapper |
 | `convert_with_ai.py` | `markitdown/scripts/` | AI-enhanced OCR using vision models |
 
-All scripts also exist mirrored in `.claude/skills/` (copied to user's CWD at runtime).
+### Script Triplication
+
+Each skill script exists in 3 locations that must be kept in sync:
+- `skills/<skill>/scripts/` — source of truth
+- `.claude/skills/<skill>/scripts/` — mirror copy
+- `scientific_writer/.claude/skills/<skill>/scripts/` — package copy
+
+When modifying any script, copy the updated file to all 3 locations.
+
+### CLI Wrapper → AI Script API Key Flow
+
+CLI wrappers (`generate_schematic.py`, `generate_infographic.py`, `generate_slide_image.py`) read the API key from env vars and pass it via `--api-key` to their corresponding `_ai.py` scripts. Both must use the same env var (`DASHSCOPE_API_KEY` for image generation, `OPENROUTER_API_KEY` for research-lookup).
 
 ### API Configuration
 

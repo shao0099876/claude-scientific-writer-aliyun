@@ -1,35 +1,35 @@
 # Claude Scientific Writer
 
-[![PyPI version](https://img.shields.io/pypi/v/scientific-writer.svg)](https://pypi.org/project/scientific-writer/)
-[![Total Downloads](https://static.pepy.tech/badge/scientific-writer)](https://pepy.tech/project/scientific-writer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-> 🚀 **Looking for more advanced capabilities?** For end-to-end scientiic writing, deep scientfic search, advanced image generation and enterprise solutions, visit **[www.k-dense.ai](https://www.k-dense.ai)**
 
 **A deep research and writing tool** that combines the power of AI-driven deep research with well-formatted written outputs. Generate publication-ready scientific papers, reports, posters, grant proposals, literature reviews, and more academic documents—all backed by real-time literature search and verified citations.
 
-Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup via Perplexity Sonar Pro Search, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with Nano Banana Pro. You have the option of using it as a claude code plugin, python package or a native CLI
+> **阿里云 DashScope 版本** — 本 fork 将图像生成和视觉模型从 OpenRouter 迁移至阿里云 DashScope SDK（通义万相 qwen-image-max），研究检索仍使用 Perplexity via OpenRouter。原始项目：[K-Dense-AI/claude-scientific-writer](https://github.com/K-Dense-AI/claude-scientific-writer)
+
+Scientific Writer performs comprehensive research before writing, ensuring every claim is supported by real, verifiable sources. Features include real-time research lookup via Perplexity Sonar Pro Search, intelligent paper detection, comprehensive document conversion, and AI-powered diagram generation with 通义万相 (qwen-image-max) via DashScope. You have the option of using it as a claude code plugin, python package or a native CLI
 
 ## Quick Start
 
 ### Prerequisites
 - Python 3.10-3.12
-- ANTHROPIC_API_KEY (required), OPENROUTER_API_KEY (optional for research lookup)
+- ANTHROPIC_API_KEY (required), DASHSCOPE_API_KEY (required for image generation/vision), OPENROUTER_API_KEY (optional, for research lookup)
 
 ### Installation Options
 
 #### Option 1: Claude Code Plugin (Recommended) ⭐
 The easiest way to use Scientific Writer is as a Claude Code plugin. See the [Plugin Installation](#-use-as-a-claude-code-plugin-recommended) section above.
 
-#### Option 2: Install from PyPI (CLI/API Usage)
+#### Option 2: Install from source with pip
 ```bash
-pip install scientific-writer
+git clone https://github.com/shao0099876/claude-scientific-writer-aliyun.git
+cd claude-scientific-writer-aliyun
+pip install -e .
 ```
 
 #### Option 3: Install from source with uv
 ```bash
-git clone https://github.com/K-Dense-AI/claude-scientific-writer.git
-cd claude-scientific-writer
+git clone https://github.com/shao0099876/claude-scientific-writer-aliyun.git
+cd claude-scientific-writer-aliyun
 uv sync
 ```
 
@@ -37,9 +37,11 @@ uv sync
 ```bash
 # .env file (recommended)
 echo "ANTHROPIC_API_KEY=your_key" > .env
-echo "OPENROUTER_API_KEY=your_openrouter_key" >> .env
+echo "DASHSCOPE_API_KEY=your_dashscope_key" >> .env
+echo "OPENROUTER_API_KEY=your_openrouter_key" >> .env  # optional, for research lookup
 # or export in your shell
 export ANTHROPIC_API_KEY='your_key'
+export DASHSCOPE_API_KEY='your_dashscope_key'
 ```
 
 ### Usage Options
@@ -108,12 +110,12 @@ asyncio.run(main())
 
 1. **Add the plugin marketplace** in Claude Code:
    ```bash
-   /plugin marketplace add https://github.com/K-Dense-AI/claude-scientific-writer
+   /plugin marketplace add https://github.com/shao0099876/claude-scientific-writer-aliyun
    ```
 
 2. **Install the plugin**:
    ```bash
-   /plugin install claude-scientific-writer
+   /plugin install claude-scientific-writer-aliyun
    ```
 
 3. **Restart Claude Code** when prompted.
@@ -160,7 +162,7 @@ asyncio.run(main())
 ### Available Skills
 
 When installed as a plugin, you get instant access to:
-- `scientific-schematics` - AI diagram generation with Nano Banana Pro (CONSORT, neural networks, pathways)
+- `scientific-schematics` - AI diagram generation with 通义万相 via DashScope (CONSORT, neural networks, pathways)
 - `research-lookup` - Real-time literature search
 - `peer-review` - Systematic manuscript evaluation
 - `citation-management` - BibTeX and reference handling
@@ -182,11 +184,11 @@ See the [Plugin Testing Guide](#plugin-testing-local-development) below for loca
 - **Research posters** using LaTeX (beamerposter, tikzposter, baposter)
 - **Grant proposals** (NSF, NIH, DOE, DARPA) with agency-specific formatting
 - **Literature reviews** with systematic citation management
-- **Scientific schematics** powered by Nano Banana Pro (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
+- **Scientific schematics** powered by 通义万相 (qwen-image-max) via DashScope (CONSORT diagrams, neural architectures, biological pathways, circuit diagrams)
 
 ### 🤖 AI-Powered Capabilities
 - **Real-time research lookup** using Perplexity Sonar Pro Search (via OpenRouter)
-- **AI-powered diagram generation** with Nano Banana Pro - create any scientific diagram from natural language descriptions
+- **AI-powered diagram generation** with 通义万相 (qwen-image-max) via DashScope - create any scientific diagram from natural language descriptions
 - **Intelligent paper detection** - automatically identifies references to existing papers
 - **Peer review feedback** with quantitative ScholarEval framework (8-dimension scoring)
 - **Iterative editing** with context-aware revision suggestions
@@ -297,17 +299,17 @@ asyncio.run(main())
 | **Grants** | `> NSF proposal for optogenetics. Present pilot_data/ with behavioral_results.csv (n=24 mice), neural_activation_maps.png, circuit_tracing.tif, and projection_analysis.csv showing 78% success in behavior modification. Include 5-year timeline with milestones.xlsx.` |
 | **Posters** | `> A0 poster for ASCO conference. Feature trial_demographics.csv (n=200), primary_outcome_kaplan_meier.png, adverse_events_heatmap.png, biomarker_correlations.csv, mechanism_schematic.png. Highlight 8.5 month median PFS improvement.` |
 | **Reviews** | `> Systematic review of immunotherapy combinations. Reference extracted_data.csv from 85 trials, include forest_plot_OS.png and forest_plot_PFS.png for meta-analysis, risk_of_bias_summary.png, network_meta_analysis.csv comparing 12 regimens.` |
-| **Schematics** | `> Generate CONSORT diagram for RCT using Nano Banana Pro. Use enrollment_data.csv (n=450 screened, 312 randomized), show flowchart with allocation. Create transformer architecture diagram showing encoder-decoder. Generate biological pathway diagrams for MAPK signaling.` |
+| **Schematics** | `> Generate CONSORT diagram for RCT using 通义万相 AI. Use enrollment_data.csv (n=450 screened, 312 randomized), show flowchart with allocation. Create transformer architecture diagram showing encoder-decoder. Generate biological pathway diagrams for MAPK signaling.` |
 
 ### File Handling
 
 ```bash
 # 1. Drop all your research files in data/ folder
-cp experimental_data.csv ~/Documents/claude-scientific-writer/data/
-cp western_blot.png ~/Documents/claude-scientific-writer/data/
-cp flow_cytometry.png ~/Documents/claude-scientific-writer/data/
-cp statistical_summary.xlsx ~/Documents/claude-scientific-writer/data/
-cp methods_diagram.svg ~/Documents/claude-scientific-writer/data/
+cp experimental_data.csv ~/Documents/claude-scientific-writer-aliyun/data/
+cp western_blot.png ~/Documents/claude-scientific-writer-aliyun/data/
+cp flow_cytometry.png ~/Documents/claude-scientific-writer-aliyun/data/
+cp statistical_summary.xlsx ~/Documents/claude-scientific-writer-aliyun/data/
+cp methods_diagram.svg ~/Documents/claude-scientific-writer-aliyun/data/
 
 # 2. Files are automatically sorted by type:
 #    Images (png, jpg, svg, tif, pdf figures) → figures/
@@ -416,12 +418,12 @@ For developers working on the plugin or testing locally:
    ```json
    {
      "name": "test-marketplace",
-     "owner": { "name": "K-Dense" },
+     "owner": { "name": "shao0099876" },
      "plugins": [
        {
-         "name": "claude-scientific-writer",
-         "source": "../claude-scientific-writer",
-         "description": "Scientific writing skills and CLAUDE.md initializer"
+         "name": "claude-scientific-writer-aliyun",
+         "source": "../claude-scientific-writer-aliyun",
+         "description": "Scientific writing skills and CLAUDE.md initializer (阿里云 DashScope edition)"
        }
      ]
    }
@@ -440,7 +442,7 @@ For developers working on the plugin or testing locally:
 
 4. **Install the plugin**:
    ```bash
-   /plugin install claude-scientific-writer@test-marketplace
+   /plugin install claude-scientific-writer-aliyun@test-marketplace
    ```
 
 5. **Restart Claude Code** when prompted.
@@ -456,7 +458,7 @@ For developers working on the plugin or testing locally:
 
 Your plugin should have this structure:
 ```
-claude-scientific-writer/
+claude-scientific-writer-aliyun/
 ├── .claude-plugin/
 │   └── plugin.json          # Plugin metadata
 ├── commands/
@@ -525,10 +527,9 @@ Want to see what Scientific Writer can create? Check out real examples in the [`
 - [📋 Release Notes](CHANGELOG.md) - Version history and updates
 - [🤖 System Instructions](CLAUDE.md) - Agent instructions (advanced)
 
-## Versioning and Publishing (short)
+## Versioning
 Use `uv` and the helper scripts:
 - Bump version (keeps pyproject + __init__ in sync): `uv run scripts/bump_version.py [patch|minor|major]`
-- Build and publish: `uv run scripts/publish.py` (or `--bump patch|minor|major`)
 See [docs/RELEASING.md](docs/RELEASING.md) for prerequisites, dry runs, tagging, and verification.
 
 ## Migration (v1.x -> v2.0)
@@ -540,25 +541,5 @@ See [docs/RELEASING.md](docs/RELEASING.md) for prerequisites, dry runs, tagging,
 MIT - see LICENSE.
 
 ## Support
-- Open an issue on GitHub
+- Open an issue on [GitHub](https://github.com/shao0099876/claude-scientific-writer-aliyun/issues)
 - See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common problems
-
-## 💬 Join Our Community!
-
-**Want to connect with other researchers, share tips, and get help in real-time?** Join our vibrant Slack community! 🎉
-
-Whether you're writing your first paper, exploring advanced features, or just want to chat about scientific writing and AI, we'd love to have you! Get faster support, share your success stories, and collaborate with fellow users.
-
-👉 **[Join the K-Dense Community on Slack](https://join.slack.com/t/k-densecommunity/shared_invite/zt-3iajtyls1-EwmkwIZk0g_o74311Tkf5g)** 👈
-
-We're excited to meet you! 🚀
-
-## ⭐ Show Your Support
-
-If you find this project helpful for your research or work, please consider giving it a star on GitHub! It helps others discover the tool and motivates continued development. Thank you! 🙏
-
-![GitHub stars](https://img.shields.io/github/stars/K-Dense-AI/claude-scientific-writer?style=social)
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=K-Dense-AI/claude-scientific-writer&type=Date)](https://star-history.com/#K-Dense-AI/claude-scientific-writer&Date)

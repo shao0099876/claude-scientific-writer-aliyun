@@ -1,3 +1,145 @@
+# Development Guide
+
+## Project Overview
+
+`claude-scientific-writer-aliyun` is a Claude Code plugin for AI-driven scientific writing. It provides an installable Python package (`scientific-writer`) and a skill system that enables Claude to produce LaTeX papers, literature reviews, grant proposals, clinical reports, and other scientific documents with real citations, AI-generated figures, and automated PDF quality review.
+
+This is a fork intended to migrate all image-related models from OpenRouter-based providers (Google Gemini, FLUX) to Alibaba Cloud (阿里云) models.
+
+## Build & Install
+
+```bash
+# Dev install
+pip install -e .
+
+# Or with uv
+uv sync
+
+# Run CLI
+scientific-writer
+```
+
+**System dependencies:** TeX Live (pdflatex, bibtex, latexmk), optionally Ghostscript and ImageMagick.
+
+**Version bumping:**
+```bash
+uv run scripts/bump_version.py [major|minor|patch]
+```
+Version is tracked in two files that must stay in sync:
+- `pyproject.toml` — `version = "..."`
+- `scientific_writer/__init__.py` — `__version__ = "..."`
+
+## Code Architecture
+
+### Package Structure
+
+```
+scientific_writer/           # Installable Python package
+├── api.py                   # Async generator API (generate_paper), effort-level model mapping
+├── cli.py                   # Interactive REPL, paper detection, data file routing
+├── core.py                  # Setup utilities: API key, skill copying, system instructions
+├── models.py                # Dataclass response models (PaperResult, ProgressUpdate, etc.)
+├── utils.py                 # Directory scanning, citation counting, word counting
+└── .claude/                 # Embedded skills, copied to user's CWD at runtime
+
+skills/                      # 24 skill directories (source of truth)
+├── <skill-name>/
+│   ├── SKILL.md             # Skill definition (YAML frontmatter + instructions)
+│   ├── scripts/             # Executable Python scripts
+│   └── references/          # Reference docs for the agent
+
+scripts/                     # Dev tooling
+├── bump_version.py          # Semantic versioning
+├── publish.py               # PyPI publishing
+└── verify_package.py        # Package verification
+```
+
+### Core Modules
+
+| Module | Purpose |
+|--------|---------|
+| `api.py` | `generate_paper()` async generator; maps effort levels to Claude models; `max_turns=500`; uses `claude_agent_sdk.query` |
+| `cli.py` | `cli_main()` entry point; interactive REPL; hardcoded `claude-sonnet-4-5`; continuation keyword detection |
+| `core.py` | `get_api_key()`, `setup_claude_skills()`, `load_system_instructions()`, `ensure_output_folder()`, data file processing |
+| `models.py` | Typed dicts: `ProgressUpdate`, `TextUpdate`, `PaperMetadata`, `PaperFiles`, `TokenUsage`, `PaperResult` |
+| `utils.py` | `find_existing_papers()`, `detect_paper_reference()`, `scan_paper_directory()`, citation/word counting |
+
+### Skill System
+
+24 skills including: `research-lookup`, `scientific-schematics`, `generate-image`, `infographics`, `scientific-slides`, `peer-review`, `literature-review`, `market-research-reports`, `citation-management`, `markitdown`, and more.
+
+Each skill has a `SKILL.md` with YAML frontmatter (name, description, triggers) plus workflow instructions, and typically `scripts/` with Python implementations.
+
+## Image Generation Architecture
+
+### Key Scripts (all under `skills/`)
+
+| Script | Location | Purpose |
+|--------|----------|---------|
+| `generate_schematic_ai.py` | `scientific-schematics/scripts/` | Core AI schematic generator class (`ScientificSchematicGenerator`) |
+| `generate_schematic.py` | `scientific-schematics/scripts/` | CLI wrapper, max 2 iterations |
+| `generate_image.py` | `generate-image/scripts/` | General image generation/editing |
+| `generate_infographic_ai.py` | `infographics/scripts/` | `InfographicGenerator` class, 10 type presets, 8 style presets |
+| `generate_infographic.py` | `infographics/scripts/` | CLI wrapper |
+| `generate_slide_image_ai.py` | `scientific-slides/scripts/` | `SlideImageGenerator` class, full_slide and visual_only modes |
+| `generate_slide_image.py` | `scientific-slides/scripts/` | CLI wrapper |
+| `convert_with_ai.py` | `markitdown/scripts/` | AI-enhanced OCR using vision models |
+
+All scripts also exist mirrored in `.claude/skills/` (copied to user's CWD at runtime).
+
+### API Configuration
+
+**Image generation & vision:** Alibaba Cloud DashScope SDK (`dashscope.MultiModalConversation.call()`)
+
+**Research lookup:** OpenRouter API (Perplexity models, unchanged)
+
+**Environment variables:**
+```bash
+ANTHROPIC_API_KEY=sk-ant-...     # Claude agent (core package)
+DASHSCOPE_API_KEY=sk-...         # Image generation + vision (阿里云 DashScope)
+OPENROUTER_API_KEY=sk-or-...     # Research lookup via Perplexity (optional)
+```
+
+### Model IDs
+
+| Model ID | Used For | Scripts |
+|----------|----------|---------|
+| `qwen-image-max` | Image generation (通义万相) | `generate_schematic_ai.py`, `generate_infographic_ai.py`, `generate_image.py`, `generate_slide_image_ai.py` |
+| `qwen3-vl-plus` | Quality review / vision understanding | `generate_schematic_ai.py`, `generate_infographic_ai.py`, `generate_slide_image_ai.py` |
+| `qwen-vl-max` | Vision/OCR (via OpenAI-compatible endpoint) | `convert_with_ai.py` |
+| `perplexity/sonar-pro` | Academic research lookup | `research-lookup/scripts/`, `generate_infographic_ai.py` |
+| `perplexity/sonar-reasoning-pro` | Deep reasoning search | `research-lookup/scripts/` |
+
+## Alibaba Cloud Migration (Completed)
+
+The migration from OpenRouter to Alibaba Cloud DashScope has been completed. Image generation and vision models now use DashScope SDK, while Perplexity research lookup remains on OpenRouter.
+
+### Environment Variables
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...     # Claude agent (core package) — unchanged
+DASHSCOPE_API_KEY=sk-...         # 阿里云 DashScope API key (image generation + vision)
+OPENROUTER_API_KEY=sk-or-...     # Perplexity research lookup (optional)
+```
+
+### Migrated Files
+
+**Image generation scripts (using DashScope SDK):**
+1. `skills/scientific-schematics/scripts/generate_schematic_ai.py`
+2. `skills/generate-image/scripts/generate_image.py`
+3. `skills/infographics/scripts/generate_infographic_ai.py`
+4. `skills/scientific-slides/scripts/generate_slide_image_ai.py`
+5. `skills/markitdown/scripts/convert_with_ai.py`
+
+Each has mirrored copies in `.claude/skills/` and `scientific_writer/.claude/skills/`.
+
+**Not affected (kept as-is):**
+- `scientific_writer/api.py` — uses Anthropic SDK directly (Claude models)
+- `scientific_writer/cli.py` — same, Anthropic SDK
+- `skills/research-lookup/` — Perplexity models via OpenRouter
+
+---
+
 # Claude Agent System Instructions
 
 ## Core Mission
@@ -85,7 +227,7 @@ For specialized documents, use the dedicated skill which contains detailed templ
 | Literature reviews | `literature-review` |
 | Infographics | `infographics` |
 
-**⚠️ INFOGRAPHICS: Do NOT use LaTeX or PDF compilation.** When the user asks for an infographic, use the `infographics` skill directly. Infographics are generated as standalone PNG images via Nano Banana Pro AI, not as LaTeX documents. No `.tex` files, no `pdflatex`, no BibTeX.
+**⚠️ INFOGRAPHICS: Do NOT use LaTeX or PDF compilation.** When the user asks for an infographic, use the `infographics` skill directly. Infographics are generated as standalone PNG images via 通义万相 AI, not as LaTeX documents. No `.tex` files, no `pdflatex`, no BibTeX.
 
 ## File Organization
 

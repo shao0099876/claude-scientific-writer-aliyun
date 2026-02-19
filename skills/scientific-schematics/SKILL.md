@@ -1,6 +1,6 @@
 ---
 name: scientific-schematics
-description: Create publication-quality scientific diagrams using Nano Banana Pro AI with smart iterative refinement. Uses Gemini 3 Pro for quality review. Only regenerates if quality is below threshold for your document type. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations.
+description: Create publication-quality scientific diagrams using 通义万相 (qwen-image-max) AI with smart iterative refinement. Uses qwen3-vl-plus for quality review. Only regenerates if quality is below threshold for your document type. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations.
 allowed-tools: [Read, Write, Edit, Bash]
 license: MIT license
 metadata:
@@ -11,12 +11,12 @@ metadata:
 
 ## Overview
 
-Scientific schematics and diagrams transform complex concepts into clear visual representations for publication. **This skill uses Nano Banana Pro AI for diagram generation with Gemini 3 Pro quality review.**
+Scientific schematics and diagrams transform complex concepts into clear visual representations for publication. **This skill uses 通义万相 (qwen-image-max) AI for diagram generation with qwen3-vl-plus quality review.**
 
 **How it works:**
 - Describe your diagram in natural language
-- Nano Banana Pro generates publication-quality images automatically
-- **Gemini 3 Pro reviews quality** against document-type thresholds
+- 通义万相 generates publication-quality images automatically
+- **qwen3-vl-plus reviews quality** against document-type thresholds
 - **Smart iteration**: Only regenerates if quality is below threshold
 - Publication-ready output in minutes
 - No coding, templates, or manual drawing required
@@ -34,11 +34,11 @@ Scientific schematics and diagrams transform complex concepts into clear visual 
 | presentation | 6.5/10 | Slides, talks |
 | default | 7.5/10 | General purpose |
 
-**Simply describe what you want, and Nano Banana Pro creates it.** All diagrams are stored in the figures/ subfolder and referenced in papers/posters.
+**Simply describe what you want, and 通义万相 creates it.** All diagrams are stored in the figures/ subfolder and referenced in papers/posters.
 
 ## Quick Start: Generate Any Diagram
 
-Create any scientific diagram by simply describing it. Nano Banana Pro handles everything automatically with **smart iteration**:
+Create any scientific diagram by simply describing it. 通义万相 handles everything automatically with **smart iteration**:
 
 ```bash
 # Generate for journal paper (highest quality threshold: 8.5/10)
@@ -55,8 +55,8 @@ python scripts/generate_schematic.py "Complex circuit diagram with op-amp, resis
 ```
 
 **What happens behind the scenes:**
-1. **Generation 1**: Nano Banana Pro creates initial image following scientific diagram best practices
-2. **Review 1**: **Gemini 3 Pro** evaluates quality against document-type threshold
+1. **Generation 1**: 通义万相 creates initial image following scientific diagram best practices
+2. **Review 1**: **qwen3-vl-plus** evaluates quality against document-type threshold
 3. **Decision**: If quality >= threshold → **DONE** (no more iterations needed!)
 4. **If below threshold**: Improved prompt based on critique, regenerate
 5. **Repeat**: Until quality meets threshold OR max iterations reached
@@ -71,12 +71,12 @@ python scripts/generate_schematic.py "Complex circuit diagram with op-amp, resis
 
 ### Configuration
 
-Set your OpenRouter API key:
+Set your DashScope API key:
 ```bash
-export OPENROUTER_API_KEY='your_api_key_here'
+export DASHSCOPE_API_KEY='your_api_key_here'
 ```
 
-Get an API key at: https://openrouter.ai/keys
+Get an API key at: https://dashscope.console.aliyun.com/
 
 ### AI Generation Best Practices
 
@@ -124,7 +124,7 @@ This skill should be used when:
 
 ## How to Use This Skill
 
-**Simply describe your diagram in natural language.** Nano Banana Pro generates it automatically:
+**Simply describe your diagram in natural language.** 通义万相 generates it automatically:
 
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o output.png
@@ -150,7 +150,7 @@ python scripts/generate_schematic.py "your diagram description" -o output.png
 
 ---
 
-# AI Generation Mode (Nano Banana Pro + Gemini 3 Pro Review)
+# AI Generation Mode (通义万相 + qwen3-vl-plus Review)
 
 ## Smart Iterative Refinement Workflow
 
@@ -160,9 +160,9 @@ The AI generation system uses **smart iteration** - it only regenerates if quali
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  1. Generate image with Nano Banana Pro             │
+│  1. Generate image with 通义万相             │
 │                    ↓                                │
-│  2. Review quality with Gemini 3 Pro                │
+│  2. Review quality with qwen3-vl-plus                │
 │                    ↓                                │
 │  3. Score >= threshold?                             │
 │       YES → DONE! (early stop)                      │
@@ -180,9 +180,9 @@ Scientific diagram guidelines + User request
 
 **Output:** `diagram_v1.png`
 
-### Quality Review by Gemini 3 Pro
+### Quality Review by qwen3-vl-plus
 
-Gemini 3 Pro evaluates the diagram on:
+qwen3-vl-plus evaluates the diagram on:
 1. **Scientific Accuracy** (0-2 points) - Correct concepts, notation, relationships
 2. **Clarity and Readability** (0-2 points) - Easy to understand, clear hierarchy
 3. **Label Quality** (0-2 points) - Complete, readable, consistent labels
@@ -219,10 +219,10 @@ VERDICT: ACCEPTABLE (for poster, threshold 7.0)
 ### Subsequent Iterations (Only If Needed)
 
 If quality is below threshold, the system:
-1. Extracts specific issues from Gemini 3 Pro's review
+1. Extracts specific issues from qwen3-vl-plus's review
 2. Enhances the prompt with improvement instructions
-3. Regenerates with Nano Banana Pro
-4. Reviews again with Gemini 3 Pro
+3. Regenerates with 通义万相
+4. Reviews again with qwen3-vl-plus
 5. Repeats until threshold met or max iterations reached
 
 ### Review Log
@@ -418,7 +418,7 @@ python scripts/generate_schematic.py "complex diagram" -o diagram.png --iteratio
 python scripts/generate_schematic.py "diagram" -o out.png -v
 ```
 
-**Note:** The Nano Banana Pro AI generation system includes automatic quality review in its iterative refinement process. Each iteration is evaluated for scientific accuracy, clarity, and accessibility.
+**Note:** The 通义万相 AI generation system includes automatic quality review in its iterative refinement process. Each iteration is evaluated for scientific accuracy, clarity, and accessibility.
 
 ## Best Practices Summary
 
@@ -600,9 +600,9 @@ Before submitting diagrams, verify:
 
 ```bash
 # Required
-export OPENROUTER_API_KEY='your_api_key_here'
+export DASHSCOPE_API_KEY='your_api_key_here'
 
-# Get key at: https://openrouter.ai/keys
+# Get key at: https://dashscope.console.aliyun.com/
 ```
 
 ## Getting Started

@@ -1,15 +1,15 @@
 ---
 name: generate-image
-description: Generate or edit images using AI models (FLUX, Gemini). Use for general-purpose image generation including photos, illustrations, artwork, visual assets, concept art, and any image that is not a technical diagram or schematic. For flowcharts, circuits, pathways, and technical diagrams, use the scientific-schematics skill instead.
+description: Generate or edit images using AI models (通义万相 qwen-image-max). Use for general-purpose image generation including photos, illustrations, artwork, visual assets, concept art, and any image that is not a technical diagram or schematic. For flowcharts, circuits, pathways, and technical diagrams, use the scientific-schematics skill instead.
 license: MIT license
-compatibility: Requires an OpenRouter API key
+compatibility: Requires a DashScope API key
 metadata:
     skill-author: K-Dense Inc.
 ---
 
 # Generate Image
 
-Generate and edit high-quality images using OpenRouter's image generation models including FLUX.2 Pro and Gemini 3 Pro.
+Generate and edit high-quality images using Alibaba Cloud DashScope's 通义万相 (qwen-image-max) model.
 
 ## When to Use This Skill
 
@@ -45,32 +45,27 @@ This generates/edits an image and saves it as `generated_image.png` in the curre
 
 ## API Key Setup
 
-**CRITICAL**: The script requires an OpenRouter API key. Before running, check if the user has configured their API key:
+**CRITICAL**: The script requires a DashScope API key. Before running, check if the user has configured their API key:
 
 1. Look for a `.env` file in the project directory or parent directories
-2. Check for `OPENROUTER_API_KEY=<key>` in the `.env` file
+2. Check for `DASHSCOPE_API_KEY=<key>` in the `.env` file
 3. If not found, inform the user they need to:
-   - Create a `.env` file with `OPENROUTER_API_KEY=your-api-key-here`
-   - Or set the environment variable: `export OPENROUTER_API_KEY=your-api-key-here`
-   - Get an API key from: https://openrouter.ai/keys
+   - Create a `.env` file with `DASHSCOPE_API_KEY=your-api-key-here`
+   - Or set the environment variable: `export DASHSCOPE_API_KEY=your-api-key-here`
+   - Get an API key from: https://dashscope.console.aliyun.com/
 
 The script will automatically detect the `.env` file and provide clear error messages if the API key is missing.
 
 ## Model Selection
 
-**Default model**: `google/gemini-3-pro-image-preview` (high quality, recommended)
+**Default model**: `qwen-image-max` (通义万相, high quality, recommended)
 
-**Available models for generation and editing**:
-- `google/gemini-3-pro-image-preview` - High quality, supports generation + editing
-- `black-forest-labs/flux.2-pro` - Fast, high quality, supports generation + editing
-
-**Generation only**:
-- `black-forest-labs/flux.2-flex` - Fast and cheap, but not as high quality as pro
+**Available models**:
+- `qwen-image-max` - High quality, supports generation + editing
 
 Select based on:
-- **Quality**: Use gemini-3-pro or flux.2-pro
-- **Editing**: Use gemini-3-pro or flux.2-pro (both support image editing)
-- **Cost**: Use flux.2-flex for generation only
+- **Quality**: Use qwen-image-max (default)
+- **Editing**: qwen-image-max supports image editing
 
 ## Common Usage Patterns
 
@@ -81,7 +76,7 @@ python scripts/generate_image.py "Your prompt here"
 
 ### Specify model
 ```bash
-python scripts/generate_image.py "A cat in space" --model "black-forest-labs/flux.2-pro"
+python scripts/generate_image.py "A cat in space" --model "qwen-image-max"
 ```
 
 ### Custom output path
@@ -96,7 +91,7 @@ python scripts/generate_image.py "Make the background blue" --input photo.jpg
 
 ### Edit with a specific model
 ```bash
-python scripts/generate_image.py "Add sunglasses to the person" --input portrait.png --model "black-forest-labs/flux.2-pro"
+python scripts/generate_image.py "Add sunglasses to the person" --input portrait.png --model "qwen-image-max"
 ```
 
 ### Edit with custom output
@@ -115,9 +110,9 @@ python scripts/generate_image.py "Image 2 description" --output image2.png
 
 - `prompt` (required): Text description of the image to generate, or editing instructions
 - `--input` or `-i`: Input image path for editing (enables edit mode)
-- `--model` or `-m`: OpenRouter model ID (default: google/gemini-3-pro-image-preview)
+- `--model` or `-m`: DashScope model ID (default: qwen-image-max)
 - `--output` or `-o`: Output file path (default: generated_image.png)
-- `--api-key`: OpenRouter API key (overrides .env file)
+- `--api-key`: DashScope API key (overrides .env file)
 
 ## Example Use Cases
 
@@ -154,25 +149,24 @@ The script provides clear error messages for:
 - Missing API key (with setup instructions)
 - API errors (with status codes)
 - Unexpected response formats
-- Missing dependencies (requests library)
+- Missing dependencies (dashscope library)
 
 If the script fails, read the error message and address the issue before retrying.
 
 ## Notes
 
-- Images are returned as base64-encoded data URLs and automatically saved as PNG files
-- The script supports both `images` and `content` response formats from different OpenRouter models
-- Generation time varies by model (typically 5-30 seconds)
+- Images are generated via DashScope API and automatically saved as PNG files
+- The script supports DashScope response formats for image extraction
+- Generation time varies (typically 5-30 seconds)
 - For image editing, the input image is encoded as base64 and sent to the model
 - Supported input image formats: PNG, JPEG, GIF, WebP
-- Check OpenRouter pricing for cost information: https://openrouter.ai/models
 
 ## Image Editing Tips
 
 - Be specific about what changes you want (e.g., "change the sky to sunset colors" vs "edit the sky")
 - Reference specific elements in the image when possible
 - For best results, use clear and detailed editing instructions
-- Both Gemini 3 Pro and FLUX.2 Pro support image editing through OpenRouter
+- qwen-image-max supports image editing through DashScope
 
 ## Integration with Other Skills
 
